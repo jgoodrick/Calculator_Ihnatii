@@ -105,4 +105,40 @@ final class Calculator_Tests: XCTestCase {
         XCTAssertEqual(result, 24.0)
     }
     
+    func test_tapped_4_tappedDivide_tapped4_tappedEquals_returns1() {
+        let calculator = Calculator()
+        _ = calculator.numberWasTapped(4)
+        _ = calculator.operationTapped(.divide)
+        _ = calculator.numberWasTapped(4)
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, 1)
+    }
+    
+    func test_clearRegister_tappedMinus_tapped5_tappedEquals_returnsNegative5() {
+        let calculator = Calculator()
+        _ = calculator.operationTapped(.minus)
+        _ = calculator.numberWasTapped(5)
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, -5)
+    }
+    
+    func test_tapped7_tapped2_tappetMinus_tapped1_tapped1_tappedEquals_return61() {
+        let calculator = Calculator()
+        _ = calculator.numberWasTapped(7)
+        _ = calculator.numberWasTapped(2)
+        _ = calculator.operationTapped(.minus)
+        _ = calculator.numberWasTapped(1)
+        _ = calculator.numberWasTapped(1)
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, 61)
+    }
+    
+    func test_tappedDot_tapped5_retunr0dot5() {
+        let calculator = Calculator()
+        _ = calculator.tappedDot()
+        let result = calculator.numberWasTapped(5)
+        XCTAssertEqual(result, 0.5)
+    }
+    
 }
+

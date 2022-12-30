@@ -49,10 +49,11 @@ private extension Calculator {
                 self.lhs = String(unwrappedLHS - unwrappedRHS)
             case .multiply:
                 self.lhs = String(unwrappedLHS * unwrappedRHS)
+            case .divide:
+                self.lhs = String(unwrappedLHS / unwrappedRHS)
             }
         }
     }
-
 }
 
 public extension Calculator {
@@ -71,11 +72,26 @@ public extension Calculator {
         return 0
     }
     
+    func tappedDot() -> Double {
+//        if lhs == nil {
+//            return "0."
+//        }
+        
+        return 0
+    }
+    
     func operationTapped(_ operation: ArithmeticOperation) -> Double {
         
         resolvePendingOperation()
         
-        guard lhs != nil else { return 0 }
+//        guard lhs != nil else { return 0 } In this code we just say that if LHS in not nil of nothing - than show us the value or if it's nil, just show us 0 (but the value inside of lhs is still nil)
+        
+        // Here we telling that if lhs (left side of equation) is nil or nothing at all, than we should treat lhs as lhs with a value of 0. And is it displayed as a String because lhs is the tipe of String
+        
+        if lhs == nil {
+            lhs = "0"
+        }
+        
         pendingOperation = operation
         return lhsAsDouble ?? 0
     }
@@ -84,6 +100,7 @@ public extension Calculator {
         case plus
         case minus
         case multiply
+        case divide
     }
     
     func tappedEquals() -> Double {
