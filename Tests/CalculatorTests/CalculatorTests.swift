@@ -140,5 +140,51 @@ final class Calculator_Tests: XCTestCase {
         XCTAssertEqual(result, 0.5)
     }
     
+    func test_tappedDot_tapped2_tapped2_return0dot22() {
+        let calculator = Calculator()
+        _ = calculator.tappedDot()
+        _ = calculator.numberWasTapped(2)
+        let result = calculator.numberWasTapped(2)
+        XCTAssertEqual(result, 0.22)
+    }
+    
+    func test_tappedDot_tapped5_tapped5_tappedPlus_tappedDot_tapped1_tapped1_tappedEquals_return0dot66() {
+        let calculator = Calculator()
+        _ = calculator.tappedDot()
+        _ = calculator.numberWasTapped(5)
+        _ = calculator.numberWasTapped(5)
+        _ = calculator.operationTapped(.plus)
+        _ = calculator.numberWasTapped(1)
+        _ = calculator.numberWasTapped(1)
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, 0.66)
+    }
+    
+//    func test_tapped5_tappedPlus_tappedEqual_tappedEqual_return15() {
+//        let calculator = Calculator()
+//        _ = calculator.numberWasTapped(5)
+//        _ = calculator.operationTapped(.plus)
+//        _ = calculator.tappedEquals()
+//        let result = calculator.tappedEquals()
+//        XCTAssertEqual(result, 15)
+//    }
+//    
+//    func test_tappedEqualsWithInterstitialOperations() {
+//        let calculator = Calculator()
+//        _ = calculator.numberWasTapped(2)
+//        _ = calculator.operationTapped(.plus)
+//        _ = calculator.numberWasTapped(4)
+//        _ = calculator.tappedEquals()
+//        _ = calculator.tappedEquals()
+//        _ = calculator.tappedEquals()
+//        _ = calculator.operationTapped(.minus)
+//        _ = calculator.numberWasTapped(5)
+//        _ = calculator.tappedEquals()
+//        _ = calculator.tappedEquals()
+//        _ = calculator.operationTapped(.multiply)
+//        let result = calculator.tappedEquals()
+//        XCTAssertEqual(result, 20)
+//    }
+    
 }
 
