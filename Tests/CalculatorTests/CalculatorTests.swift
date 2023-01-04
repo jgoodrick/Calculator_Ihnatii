@@ -1,6 +1,6 @@
 
 import XCTest
-import Calculator
+@testable import Calculator
 
 final class Calculator_Tests: XCTestCase {
     
@@ -160,31 +160,128 @@ final class Calculator_Tests: XCTestCase {
         XCTAssertEqual(result, 0.66)
     }
     
-//    func test_tapped5_tappedPlus_tappedEqual_tappedEqual_return15() {
-//        let calculator = Calculator()
-//        _ = calculator.numberWasTapped(5)
-//        _ = calculator.operationTapped(.plus)
-//        _ = calculator.tappedEquals()
-//        let result = calculator.tappedEquals()
-//        XCTAssertEqual(result, 15)
-//    }
-//    
-//    func test_tappedEqualsWithInterstitialOperations() {
+    
+    func test_tappedEqualsWithInterstitialOperations() {
+        let calculator = Calculator()
+        //        XCTAssertEqual(calculator.snapshot, .init())
+        _ = calculator.numberWasTapped(2)
+        //        XCTAssertEqual(calculator.snapshot, .init(lhs: "2"))
+        _ = calculator.operationTapped(.plus)
+        //        XCTAssertEqual(calculator.snapshot, .init(lhs: "2", pendingOperation: .plus))
+        _ = calculator.numberWasTapped(4)
+        //        XCTAssertEqual(calculator.snapshot, .init(lhs: "2", pendingOperation: .plus, rhs: "4"))
+        _ = calculator.tappedEquals()
+        //        XCTAssertEqual(calculator.snapshot, .init(
+        //            lhs: "6",
+        //            pendingOperation: nil,
+        //            rhs: nil,
+        //            dotIsPending: false,
+        //            previous: .init(
+        //                pendingOperation: .plus,
+        //                rhs: "4"
+        //            )
+        //        ))
+        //        XCTAssertEqual(calculator.snapshot.pendingOperation, nil)
+        _ = calculator.tappedEquals()
+        _ = calculator.tappedEquals()
+        _ = calculator.operationTapped(.minus)
+        _ = calculator.numberWasTapped(5)
+        _ = calculator.tappedEquals()
+        _ = calculator.tappedEquals()
+        _ = calculator.operationTapped(.multiply)
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, 20)
+    }
+    
+    func test_tapped5_tappedPlus_tappedEqual_tappedEqual_return15() {
+        let calculator = Calculator()
+        _ = calculator.numberWasTapped(5)
+        XCTAssertEqual(calculator.snapshot, .init(lhs: "5"))
+        _ = calculator.operationTapped(.plus)
+        XCTAssertEqual(calculator.snapshot, .init(lhs: "5", pendingOperation: .plus))
+        _ = calculator.tappedEquals()
+        XCTAssertEqual(calculator.snapshot, .init(
+            lhs: "10",
+            pendingOperation: nil,
+            rhs: nil,
+            previous: .init(
+                pendingOperation: .plus,
+                rhs: "5"
+            )
+        ))
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, 15)
+    }
+    
+    func test_checkingProperlyChangingTheRHS() {
+        let calculator = Calculator()
+        _ = calculator.numberWasTapped(2)
+        _ = calculator.operationTapped(.plus)
+        _ = calculator.tappedEquals()
+        _ = calculator.tappedEquals()
+        _ = calculator.operationTapped(.minus)
+        _ = calculator.numberWasTapped(1)
+        let result = calculator.tappedEquals()
+        XCTAssertEqual(result, 5)
+    }
+    
+    func test_tappedPlusAndMinus() {
+        let calculator = Calculator()
+        _ = calculator.numberWasTapped(4)
+        _ = calculator.plusMinus()
+        XCTAssertEqual(calculator.snapshot, .init(lhs: "-4"))
+        let result = calculator.numberWasTapped(4)
+        XCTAssertEqual(result, -44)
+    }
+    
+//    func test_checkingIncrementWithoutInsertingOperation() {
 //        let calculator = Calculator()
 //        _ = calculator.numberWasTapped(2)
+//        XCTAssertEqual(calculator.snapshot, .init(lhs: "2"))
 //        _ = calculator.operationTapped(.plus)
-//        _ = calculator.numberWasTapped(4)
+//        XCTAssertEqual(calculator.snapshot, .init(lhs: "2", pendingOperation: .plus))
 //        _ = calculator.tappedEquals()
 //        _ = calculator.tappedEquals()
-//        _ = calculator.tappedEquals()
-//        _ = calculator.operationTapped(.minus)
 //        _ = calculator.numberWasTapped(5)
-//        _ = calculator.tappedEquals()
-//        _ = calculator.tappedEquals()
-//        _ = calculator.operationTapped(.multiply)
+//        XCTAssertEqual(calculator.snapshot, .init(
+//            lhs: "5",
+//            pendingOperation: nil,
+//            rhs: nil,
+//            previous: .init(
+//                pendingOperation: .plus,
+//                rhs: "2"
+//            )
+//        ))
 //        let result = calculator.tappedEquals()
-//        XCTAssertEqual(result, 20)
+//        XCTAssertEqual(result, 7)
 //    }
     
 }
 
+
+
+
+extension Calculator {
+    struct StateSnapshot: Equatable {
+        var lhs: String?
+        var pendingOperation: ArithmeticOperation?
+        var rhs: String?
+        var dotIsPending: Bool = false
+        var previous: Previous = .init()
+    }
+    var snapshot: StateSnapshot {
+        StateSnapshot.init(
+            lhs: lhs,
+            pendingOperation: pendingOperation,
+            rhs: rhs,
+            dotIsPending: dotIsPending,
+            previous: previous
+        )
+    }
+}
+
+extension Calculator.StateSnapshot: CustomStringConvertible {
+    var description: String {
+        "\(lhs ?? "nil") | \(pendingOperation.map({"\($0)"}) ?? "nil") | \(rhs ?? "nil") | dp: \(dotIsPending) | previous: \(previous.pendingOperation.map({"\($0)"}) ?? "nil") \(previous.rhs ?? "nil")"
+    }
+}
