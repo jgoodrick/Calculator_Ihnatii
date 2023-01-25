@@ -2,21 +2,28 @@
 import SwiftUI
 
 public struct MainView: View {
-    public init(buttonsView: ButtonsView) {
+    public init(
+        display: String,
+        buttonsView: ButtonsView
+    ) {
         self.buttonsView = buttonsView
+        self.display = display
     }
     
+    let display: String
     let buttonsView: ButtonsView
     
     public var body: some View {
         VStack {
             Spacer(minLength: 0)
             
-            Text("0")
+            Text(display)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .font(.system(size: 90))
                 .foregroundColor(.white)
                 .padding()
+                .lineLimit(1)
+                .minimumScaleFactor(0.2)
             
             buttonsView
         }
@@ -28,6 +35,7 @@ public struct MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView(
+            display: "example",
             buttonsView: ButtonsView(
                 onNumber: {_ in },
                 onClear: {},

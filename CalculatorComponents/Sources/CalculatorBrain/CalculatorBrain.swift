@@ -1,5 +1,5 @@
 
-public final class Calculator {
+public final class CalculatorBrain {
     
     var lhs: String?
     var pendingOperation: ArithmeticOperation? // optional, because it could be activated or it could be not
@@ -28,7 +28,7 @@ private extension Optional<String> {
     }
 }
 
-private extension Calculator {
+private extension CalculatorBrain {
     // In order to work with functions inside extention Calculator we need to change lhs as a String to a Double(optional).
 //    var lhsAsDouble: Double? {
 //        //This code represents that only if there is something in lhs, than we procced further, or else - just show nil (or we specificly pointed out in operationTapped that lhs that stored nil is stored 0, as a String
@@ -94,12 +94,14 @@ private extension Calculator {
             return true //
         }
         return !register.contains(".")
+        
     }
     
     func tappedDot() -> Double {
         if register == nil {
             register = "0"
         }
+        
         //If the condition of Bool statement is true - than take first element ($0) and if it some number - than unwrapped it as Double, or return 0 if it no numbers, and than - unwrapped it in register as String.
         dotIsPending = true
         return register.map({Double($0) ?? 0}) ?? 0
@@ -107,6 +109,7 @@ private extension Calculator {
     
     func tappedClear() -> Double {
         lhs = nil
+        dotIsPending = false
         return 0
     }
     
@@ -189,10 +192,51 @@ private extension Double {
     }
 }
 
-public extension Calculator {
+public extension CalculatorBrain {
     
+    //Here we check for zero's in our String (register)
+    var numberOfTrailingZeroes: Int {
+        
+        //Make sure that there is some numbers in register or just return 0
+        guard let register else {
+            return 0
+        }
+        
+        //Make sure that the register contains "." and "shouldPrependDot" is equal true, than move forward, or else just return 0
+        guard register.contains(".") || shouldPrependDot else {
+            return 0
+        }
+        
+        // if there is numbers in register and it has ".", that tke the "count", and a boolean "encounterADot" wich is by default false and go further
+        var count: Int = 0
+        
+        var encounteredADot: Bool = false
+        
+        //Now it must iterate throug every "char" in our register, and if thoose char is "0", than it must add +1 to the Count
+        for char in register.reversed().dropLast() {
+            if char == "0" {
+                count += 1
+            //if the "char" inside the String is "." it shoud switch boolean and just stopped "break"
+            } else if char == "." {
+                encounteredADot = true
+                break
+            // IF there is neither "0" nor "." than just return the count
+            } else {
+                return count
+            }
+        }
+        
+        guard encounteredADot else {
+            return 0
+        }
+        
+        return count
+    }
     
+
     func tapped(number tappedInteger: Int) -> Double {
+        
+        
         
         //Take the store value of Int
         let resolvedInteger: Int
@@ -200,6 +244,7 @@ public extension Calculator {
         if makeNextNumberTappedNegative {
         //Take input number (tappedInteger) and make it with "-" value and then store it in "resolvedInteger"
              resolvedInteger = -1 * tappedInteger
+            makeNextNumberTappedNegative = false
         } else {
         // If the Boolian condotion is triggered again (changed to false) than make inout number without "-" value and store it in resolvedInteger
             resolvedInteger = tappedInteger
@@ -212,6 +257,8 @@ public extension Calculator {
         if shouldPrependDot {
             // Because now we have displayNumber as a String, we could add "." as a String to displayNumber and than store it together in that displayNumber
             displayNumber = "." + displayNumber
+            
+            
             dotIsPending = false
         }
         
@@ -224,7 +271,7 @@ public extension Calculator {
         
         unwrappedRegister.append(displayNumber)
         register = unwrappedRegister
-        return lhs.asDouble ?? 0
+        return Optional(unwrappedRegister).asDouble ?? 0
     }
     
     func tapped(operation: ArithmeticOperation) -> Double {

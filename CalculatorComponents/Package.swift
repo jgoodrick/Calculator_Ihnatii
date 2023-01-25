@@ -29,23 +29,29 @@ let package = Package(
                     name: "ComposableArchitecture",
                     package: "swift-composable-architecture"
                 ),
-                "CalculatorСomponent",
+                "CalculatorBrain",
                 "CalculatorViews",
             ]
         ),
         .target(
-            name: "CalculatorСomponent"
+            name: "CalculatorBrain"
         ),
         .target(
             name: "CalculatorViews"
         ),
         .testTarget(
-            name: "CalculatorСomponentTests",
-            dependencies: ["CalculatorСomponent"]
+            name: "CalculatorBrainTests",
+            dependencies: ["CalculatorBrain"]
         ),
         .testTarget(
             name: "AppFeatureTests",
-            dependencies: ["AppFeature"]
+            dependencies: [
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                "AppFeature"
+            ]
         ),
     ]
 )

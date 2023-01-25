@@ -38,6 +38,9 @@ public struct ButtonsView: View {
     let onMinus: () -> Void
     let onPlus: () -> Void
     
+    
+    
+    
     public var body: some View {
         Grid {
             GridRow {
